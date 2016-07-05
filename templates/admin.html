@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CrowdQ Admin</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="static/favicon.ico"/>
+
+    
+<script   src="static/js/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
+
+  <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="static/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="static/js/bootstrap.min.js"></script>
+
+<style>
+
+
+.jumbotron,.footer{text-align:center}
+
+   /* Space out content a bit */
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+/* Custom page header */
+.header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+}
+
+/* Custom page footer */
+.footer {
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
+.jumbotron {
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+.jumbotron .btn {
+  padding: 14px 24px;
+  font-size: 21px;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  /* Remove the padding we set earlier */
+  .header,
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 30px;
+  }
+  /* Remove the bottom border on the jumbotron for visual effect */
+  .jumbotron {
+    border-bottom: 0;
+  }
+}
+  </style>
+
+  <script>
+  var latest = 0;
+  var categories = {{categories|safe}}
+  function del(id)
+  {
+    $.ajax({ url: "delete?id=" + id, success: function(data){
+        if(data == "Success")
+        {
+          $("#" + id).fadeOut(700, function(){ 
+              $(this).remove();
+          });
+        }
+      }, dataType: "text"});
+  }
+  function push(id)
+  {
+    $.ajax({ url: "push?id=" + id, success: function(data){
+        if(data == "Success")
+        {
+          $("#" + id).fadeOut(700, function(){ 
+              $(this).remove();
+          });
+        }
+      }, dataType: "text"});
+  }
+  function checkchanged(el)
+  {
+    if(el.checked)
+    {
+      document.getElementById("name").disabled = true;
+    }
+    else
+    {
+      document.getElementById("name").disabled = false;
+    }
+  }
+
+  $(document).ready(function() {
+  // executes when HTML-Document is loaded and DOM is ready
+  (function poll(){
+   setTimeout(function(){
+      $.ajax({ url: "getques?latest=" + latest, success: function(data){
+        if(data["questions"].length>0)
+        {
+          latest = data["questions"][data["questions"].length - 1][0];
+          for(var i = 0; i<data["questions"].length ; i++)
+          {
+            if(data["questions"][i][2] != "deleted" && data["questions"][i][2] != "pushed")
+              {
+                      var tr = document.createElement('tr');
+                  category = data["questions"][i][4];
+                  category_text = "Other";
+                  for(var j = 0;j<categories.length;j++)
+                  {
+                    if(categories[j]["id"] == category)
+                    {
+                      category_text = categories[j]["name"];
+                      break;
+                    }
+                  }
+                  tr.id = data["questions"][i][0];
+                  tr.innerHTML = '<td>' + data["questions"][i][0] + '</td>\
+                        <td>' + data["questions"][i][1] + '</td>\
+                        <td>' + data["questions"][i][3] + '</td>\
+                        <td>' + category_text + '</td>\
+                        <td><button type="button" class="btn btn-primary" onclick="push(' + data["questions"][i][0] + ')">Push</button></td>\
+                        <td><button type="button" class="btn btn-danger" onclick="del(' + data["questions"][i][0] + ')">Delete</button></td>';
+                      document.getElementById("tbod").appendChild(tr);
+                      $(tr).hide().fadeIn(1000);
+            }
+          }
+        }
+        else
+        {
+          console.log("No new data found")
+        }
+
+        //Setup the next poll recursively
+        poll();
+      }, error: function(){ poll(); }, dataType: "json"});
+  }, 5000);
+})();
+    /*setInterval(function(){
+    $.ajax({ url: "getques?latest=" + latest, success: function(data){
+        //Update your dashboard gauge
+        if(data["questions"].length>0)
+        {
+          latest = data["questions"][data["questions"].length - 1][0];
+          for(var i = 0; i<data["questions"].length ; i++)
+          {
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + data["questions"][i][0] + '</td>\
+                  <td>' + data["questions"][i][1] + '</td>\
+                  <td>' + data["questions"][i][3] + '</td>\
+                  <td><button type="button" class="btn btn-primary">Push</button></td>\
+                  <td><button type="button" class="btn btn-danger">Delete</button></td>';
+                document.getElementById("tbod").appendChild(tr);
+                $(tr).hide().fadeIn(1000);
+          }
+        }
+        else
+        {
+          console.log("No new data found")
+        }
+    }, dataType: "json"});
+}, 100);*/
+  });
+  </script>
+
+</head>
+<body>
+  <div class="container">
+      <div class="header clearfix">
+        <h3 class="text-muted">CrowdQ Admin</h3>
+      <a href="delete_unpush"><button type="button" onclick="delete_unpush()" class="btn btn-danger">Delete Unpushed</button></a>
+      <a href="delete_push"><button type="button" onclick="delete_push()" class="btn btn-danger">Delete Pushed</button></a>
+      </div>
+      <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>UID</th>
+                  <th>Question</th>
+                  <th>Asked by</th>
+                  <th>Category</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="tbod">
+                <!--{% for question in questions %}
+                <tr>
+                  <td>{{question[0]}}</td>
+                  <td>{{question[1]}}</td>
+                  <td>{{question[3]}}</td>
+                  <td>{{question[4]}}</td>
+                  <td><button type="button" class="btn btn-primary">Push</button></td>
+                  <td><button type="button" class="btn btn-danger">Delete</button></td>
+                </tr>
+                {% endfor %}-->
+              </tbody>
+            </table>
+          </div>
+      <footer class="footer">
+        <p>&copy; CrowdQ 2016</p>
+      </footer>
+
+    </div>
+</body>
+</html>

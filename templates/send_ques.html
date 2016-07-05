@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CrowdQ</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="static/favicon.ico"/>
+
+<script   src="static/js/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
+
+  <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="static/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="static/js/bootstrap.min.js"></script>
+
+<style>
+
+
+
+/*
+ * Base structure
+ */
+
+html,
+body {
+  height: 100%;
+  background-color: #333;
+  font-family: 'Montserrat', sans-serif;
+}
+body {
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,.5);
+}
+
+/* Extra markup and styles for table-esque vertical and horizontal centering */
+.site-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%; /* For at least Firefox */
+  min-height: 100%;
+  -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+          box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+}
+.site-wrapper-inner {
+  display: table-cell;
+  vertical-align: top;
+}
+.cover-container {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Padding for spacing */
+.inner {
+  padding: 30px;
+}
+
+
+/*
+ * Header
+ */
+.masthead-brand {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.masthead-nav > li {
+  display: inline-block;
+}
+.masthead-nav > li + li {
+  margin-left: 20px;
+}
+.masthead-nav > li > a {
+  padding-right: 0;
+  padding-left: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff; /* IE8 proofing */
+  color: rgba(255,255,255,.75);
+  border-bottom: 2px solid transparent;
+}
+.masthead-nav > li > a:hover,
+.masthead-nav > li > a:focus {
+  background-color: transparent;
+  border-bottom-color: #a9a9a9;
+  border-bottom-color: rgba(255,255,255,.25);
+}
+.masthead-nav > .active > a,
+.masthead-nav > .active > a:hover,
+.masthead-nav > .active > a:focus {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+@media (min-width: 768px) {
+  .masthead-brand {
+    float: left;
+  }
+  .masthead-nav {
+    float: right;
+  }
+}
+
+
+/*
+ * Cover
+ */
+
+.cover {
+  padding: 0 20px;
+}
+.cover .btn-lg {
+  padding: 10px 20px;
+  font-weight: bold;
+}
+
+
+/*
+ * Footer
+ */
+
+.mastfoot {
+  color: #999; /* IE8 proofing */
+  color: rgba(255,255,255,.5);
+}
+
+
+/*
+ * Affix and center
+ */
+
+@media (min-width: 768px) {
+  /* Pull out the header and footer */
+  .masthead {
+    position: fixed;
+    top: 0;
+  }
+  .mastfoot {
+    position: fixed;
+    bottom: 0;
+  }
+  /* Start the vertical centering */
+  .site-wrapper-inner {
+    vertical-align: middle;
+  }
+  /* Handle the widths */
+  .masthead,
+  .mastfoot,
+  .cover-container {
+    width: 100%; /* Must be percentage or pixels for horizontal alignment */
+  }
+}
+
+@media (min-width: 992px) {
+  .masthead,
+  .mastfoot,
+  .cover-container {
+    width: 700px;
+  }
+}
+  </style>
+
+  <script>
+  function checkchanged(el)
+  {
+    if(el.checked)
+    {
+      document.getElementById("name").disabled = true;
+    }
+    else
+    {
+      document.getElementById("name").disabled = false;
+    }
+  }
+  </script>
+
+</head>
+<body>
+
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand"><img style="height:4em" src="/static/crowdq.png"/></h3>
+            </div>
+          </div>
+<!--1143786542350915-->
+          <div class="inner cover">
+            <h1 class="cover-heading"><b>Ask a Question!</b></h1>
+            <br/>
+            <div class="lead">
+                <div>
+        <form method="POST" action="send">
+        <p><input name="name" type="text" id="name" class="form-control" placeholder="Your Name" autofocus> </p>
+        <div class="checkbox">
+          <label><input name="anon" type="checkbox" onchange="checkchanged(this)" value="anon">Send Anonymously</label>
+          </div>
+        
+                    <p>
+            <select class="form-control" id="categories" name="categories" required>
+              <option selected disabled value="{{otherid}}">Select a category for your question</option>
+              {% for cat in categories %}
+              <option value="{{cat.id}}">{{cat.name}}</option>
+              {% endfor %}
+            </select>
+          </p>
+          <p><input name="question" type="text" id="inputMessage" class="form-control" placeholder="Question" required></p>
+          <p><button class="btn btn-lg btn-primary" type="submit">Ask</button></p>
+        </form>
+        </p>
+      </div>
+            </div>
+          </div>
+
+          <div class="mastfoot">
+            <div class="inner">
+              <p>&copy; CrowdQ 2016</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+</body>
+</html>
