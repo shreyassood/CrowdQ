@@ -17,6 +17,11 @@ To run the local server
 $ sudo python app.py
 ```
 
+If running on gunicorn
+```sh
+$ gunicorn -b 0.0.0.0:80 -w 4 app:app
+```
+
 To send in questions connect to:
 ```HTTP://SERVER-IP/ ```
 
