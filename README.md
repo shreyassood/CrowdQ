@@ -1,6 +1,6 @@
 # CrowdQ
 
-CrowdQ is a webapp hosted on a local server and used to crowdsource questions at a live conference, panel discussion or event. After running the server, anyone on the local Wi-Fi network can connect to the same IP and send in questions which can be managed by and admin and pushed to a display screen.
+CrowdQ is a webapp (hosted on a local server) used to crowdsource questions at a live conference, panel discussion or event. After running the server, anyone on the local Wi-Fi network can connect to the server IP and send in questions which can be managed by an admin and pushed to a display screen.
 
 ### Installation
 
